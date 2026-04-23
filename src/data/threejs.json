@@ -1,0 +1,264 @@
+{
+  "categories": [
+    {
+      "id": "basic-scene",
+      "name": "基础场景",
+      "description": "场景搭建、坐标系、基础渲染",
+      "icon": "cube",
+      "items": [
+        {
+          "id": "hello-world",
+          "title": "Hello Three.js",
+          "description": "创建你的第一个Three.js场景",
+          "difficulty": "入门",
+          "tags": ["入门", "场景", "基础"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Simple%20Three.js%20scene%20with%20rotating%20colorful%20cube%20on%20dark%20background&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\nconst scene = new THREE.Scene()\nconst camera = new THREE.PerspectiveCamera(\n  75,\n  window.innerWidth / window.innerHeight,\n  0.1,\n  1000\n)\nconst renderer = new THREE.WebGLRenderer()\n\nrenderer.setSize(window.innerWidth, window.innerHeight)\ndocument.body.appendChild(renderer.domElement)\n\nconst geometry = new THREE.BoxGeometry(1, 1, 1)\nconst material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })\nconst cube = new THREE.Mesh(geometry, material)\n\nscene.add(cube)\ncamera.position.z = 5\n\nfunction animate() {\n  requestAnimationFrame(animate)\n  cube.rotation.x += 0.01\n  cube.rotation.y += 0.01\n  renderer.render(scene, camera)\n}\n\nanimate()"
+        },
+        {
+          "id": "coordinate-system",
+          "title": "坐标系详解",
+          "description": "理解Three.js中的坐标系和空间变换",
+          "difficulty": "入门",
+          "tags": ["坐标系", "空间", "变换"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=3D%20coordinate%20system%20with%20X%20Y%20Z%20axes%20red%20green%20blue%20and%20grid%20floor&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\nimport { OrbitControls } from 'three/addons/controls/OrbitControls.js'\n\nconst scene = new THREE.Scene()\nconst camera = new THREE.PerspectiveCamera(\n  75,\n  window.innerWidth / window.innerHeight,\n  0.1,\n  1000\n)\nconst renderer = new THREE.WebGLRenderer()\n\nrenderer.setSize(window.innerWidth, window.innerHeight)\ndocument.body.appendChild(renderer.domElement)\n\nconst controls = new OrbitControls(camera, renderer.domElement)\n\n// 网格辅助\nconst gridHelper = new THREE.GridHelper(20, 20)\nscene.add(gridHelper)\n\n// 坐标轴辅助\nconst axesHelper = new THREE.AxesHelper(5)\nscene.add(axesHelper)\n\n// 创建几个立方体展示位置关系\nconst cube1 = new THREE.Mesh(\n  new THREE.BoxGeometry(1, 1, 1),\n  new THREE.MeshBasicMaterial({ color: 0xff0000 })\n)\ncube1.position.set(0, 0.5, 0)\nscene.add(cube1)\n\nconst cube2 = cube1.clone()\ncube2.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })\ncube2.position.set(2, 0.5, 2)\nscene.add(cube2)\n\nconst cube3 = cube1.clone()\ncube3.material = new THREE.MeshBasicMaterial({ color: 0x0000ff })\ncube3.position.set(-2, 0.5, -2)\nscene.add(cube3)\n\ncamera.position.set(5, 5, 5)\ncontrols.update()\n\nfunction animate() {\n  requestAnimationFrame(animate)\n  controls.update()\n  renderer.render(scene, camera)\n}\n\nanimate()"
+        }
+      ]
+    },
+    {
+      "id": "geometry",
+      "name": "几何体",
+      "description": "BufferGeometry、参数化几何体",
+      "icon": "shapes",
+      "items": [
+        {
+          "id": "builtin-geometries",
+          "title": "内置几何体",
+          "description": "使用Three.js提供的各种内置几何体",
+          "difficulty": "入门",
+          "tags": ["几何体", "基础", "内置"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Various%20Three.js%20geometries%20sphere%20cube%20cone%20torus%20cylinder%20displayed%20in%20grid&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\nconst geometries = [\n  new THREE.BoxGeometry(1, 1, 1),\n  new THREE.SphereGeometry(0.5, 32, 32),\n  new THREE.ConeGeometry(0.5, 1, 32),\n  new THREE.CylinderGeometry(0.5, 0.5, 1, 32),\n  new THREE.TorusGeometry(0.5, 0.2, 16, 100),\n  new THREE.TorusKnotGeometry(0.5, 0.2, 100, 16),\n  new THREE.DodecahedronGeometry(0.5),\n  new THREE.IcosahedronGeometry(0.5),\n  new THREE.OctahedronGeometry(0.5),\n  new THREE.TetrahedronGeometry(0.5)\n]\n\nconst materials = geometries.map(() => \n  new THREE.MeshStandardMaterial({ \n    color: Math.random() * 0xffffff,\n    metalness: 0.7,\n    roughness: 0.2\n  })\n)\n\ngeometries.forEach((geometry, index) => {\n  const mesh = new THREE.Mesh(geometry, materials[index])\n  const row = Math.floor(index / 3)\n  const col = index % 3\n  mesh.position.set((col - 1) * 3, (row - 1) * 3, 0)\n  scene.add(mesh)\n})"
+        },
+        {
+          "id": "buffer-geometry",
+          "title": "BufferGeometry详解",
+          "description": "深入理解BufferGeometry，手动创建几何体",
+          "difficulty": "中级",
+          "tags": ["BufferGeometry", "自定义", "性能"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Custom%20BufferGeometry%20with%20colored%20triangles%20wireframe%20showing%20vertices%20and%20faces&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\n// 创建一个自定义的三角形几何体\nconst geometry = new THREE.BufferGeometry()\n\n// 顶点数据\nconst vertices = new Float32Array([\n   0.0,  1.0, 0.0,\n  -1.0, -1.0, 0.0,\n   1.0, -1.0, 0.0,\n   0.0,  2.0, 1.0,\n  -2.0, -2.0, 1.0,\n   2.0, -2.0, 1.0\n])\n\n// 颜色数据\nconst colors = new Float32Array([\n  1.0, 0.0, 0.0,\n  0.0, 1.0, 0.0,\n  0.0, 0.0, 1.0,\n  1.0, 1.0, 0.0,\n  0.0, 1.0, 1.0,\n  1.0, 0.0, 1.0\n])\n\n// 索引数据\nconst indices = [0, 1, 2, 3, 4, 5]\n\n// 设置属性\ngeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))\ngeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))\ngeometry.setIndex(indices)\n\n// 计算法线\ngeometry.computeVertexNormals()\n\nconst material = new THREE.MeshStandardMaterial({\n  vertexColors: true,\n  wireframe: false,\n  side: THREE.DoubleSide\n})\n\nconst mesh = new THREE.Mesh(geometry, material)\nscene.add(mesh)"
+        },
+        {
+          "id": "parametric-geometry",
+          "title": "参数化几何体",
+          "description": "使用ParametricGeometry创建数学曲面",
+          "difficulty": "中级",
+          "tags": ["参数化", "数学", "曲面"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Parametric%20mathematical%20surface%20like%20Mobius%20strip%20or%20torus%20knot%20with%20elegant%20colors&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\n// 莫比乌斯带\nfunction mobius(u, v, target) {\n  u = u * Math.PI * 2\n  v = v * 2 - 1\n  \n  const t = u / 2\n  const a = 0.5\n  \n  target.x = Math.cos(t) * (a + v * Math.cos(t / 2) * a)\n  target.y = Math.sin(t) * (a + v * Math.cos(t / 2) * a)\n  target.z = v * Math.sin(t / 2) * a\n}\n\n// 克莱因瓶\nfunction klein(u, v, target) {\n  u = u * Math.PI * 2\n  v = v * Math.PI * 2\n  \n  let x, y, z\n  \n  if (u < Math.PI) {\n    x = 6 * Math.cos(u) * (1 + Math.sin(u)) + (4 * (1 - Math.cos(u) / 2)) * Math.cos(u) * Math.cos(v)\n    y = 16 * Math.sin(u) + (4 * (1 - Math.cos(u) / 2)) * Math.sin(u) * Math.cos(v)\n    z = (4 * (1 - Math.cos(u) / 2)) * Math.sin(v)\n  } else {\n    x = 6 * Math.cos(u) * (1 + Math.sin(u)) - (4 * (1 - Math.cos(u) / 2)) * Math.cos(v)\n    y = 16 * Math.sin(u)\n    z = (4 * (1 - Math.cos(u) / 2)) * Math.sin(v)\n  }\n  \n  target.set(x, y, z)\n  target.multiplyScalar(0.1)\n}\n\nconst geometry = new THREE.ParametricGeometry(mobius, 25, 25)\ngeometry.center()\n\nconst material = new THREE.MeshStandardMaterial({\n  color: 0x6366f1,\n  metalness: 0.3,\n  roughness: 0.4,\n  side: THREE.DoubleSide,\n  wireframe: false\n})\n\nconst mesh = new THREE.Mesh(geometry, material)\nscene.add(mesh)"
+        }
+      ]
+    },
+    {
+      "id": "material-texture",
+      "name": "材质纹理",
+      "description": "PBR材质、法线贴图、环境映射",
+      "icon": "palette",
+      "items": [
+        {
+          "id": "pbr-materials",
+          "title": "PBR材质",
+          "description": "理解基于物理的渲染材质系统",
+          "difficulty": "中级",
+          "tags": ["PBR", "材质", "物理渲染"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=PBR%20materials%20showcase%20with%20gold%20silver%20copper%20plastic%20ceramic%20reflective%20surfaces&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\nconst materials = [\n  // 金属\n  { color: 0xffd700, metalness: 1.0, roughness: 0.1, name: 'Gold' },\n  { color: 0xc0c0c0, metalness: 1.0, roughness: 0.1, name: 'Silver' },\n  { color: 0xb87333, metalness: 1.0, roughness: 0.2, name: 'Copper' },\n  // 非金属\n  { color: 0xff0000, metalness: 0.0, roughness: 0.5, name: 'Plastic' },\n  { color: 0xffffff, metalness: 0.0, roughness: 0.1, name: 'Ceramic' },\n  { color: 0x2194ce, metalness: 0.1, roughness: 0.2, name: 'Paint' }\n]\n\nmaterials.forEach((mat, index) => {\n  const geometry = new THREE.SphereGeometry(0.5, 64, 64)\n  const material = new THREE.MeshStandardMaterial({\n    color: mat.color,\n    metalness: mat.metalness,\n    roughness: mat.roughness\n  })\n  \n  const mesh = new THREE.Mesh(geometry, material)\n  mesh.position.set(\n    (index % 3 - 1) * 2,\n    Math.floor(index / 3) * 2 - 1,\n    0\n  )\n  scene.add(mesh)\n})\n\n// 添加环境光和方向光\nconst ambientLight = new THREE.AmbientLight(0xffffff, 0.5)\nscene.add(ambientLight)\n\nconst directionalLight = new THREE.DirectionalLight(0xffffff, 1)\ndirectionalLight.position.set(5, 5, 5)\nscene.add(directionalLight)"
+        },
+        {
+          "id": "normal-mapping",
+          "title": "法线贴图",
+          "description": "使用法线贴图模拟表面细节",
+          "difficulty": "中级",
+          "tags": ["法线贴图", "纹理", "细节"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Normal%20mapping%20comparison%20showing%20flat%20surface%20vs%20bumpy%20surface%20with%20texture%20details&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\n// 创建纹理加载器\nconst textureLoader = new THREE.TextureLoader()\n\n// 加载纹理\nconst baseColorTexture = textureLoader.load('textures/basecolor.jpg')\nconst normalTexture = textureLoader.load('textures/normal.jpg')\nconst roughnessTexture = textureLoader.load('textures/roughness.jpg')\nconst aoTexture = textureLoader.load('textures/ao.jpg')\n\n// 设置纹理属性\n;[baseColorTexture, normalTexture, roughnessTexture, aoTexture].forEach(texture => {\n  texture.wrapS = THREE.RepeatWrapping\n  texture.wrapT = THREE.RepeatWrapping\n  texture.repeat.set(2, 2)\n})\n\nconst material = new THREE.MeshStandardMaterial({\n  map: baseColorTexture,\n  normalMap: normalTexture,\n  normalScale: new THREE.Vector2(1, 1),\n  roughnessMap: roughnessTexture,\n  roughness: 0.5,\n  metalness: 0.0,\n  aoMap: aoTexture,\n  aoMapIntensity: 1.0\n})\n\nconst geometry = new THREE.PlaneGeometry(4, 4, 100, 100)\nconst mesh = new THREE.Mesh(geometry, material)\nmesh.rotation.x = -Math.PI / 2\nscene.add(mesh)\n\n// 没有法线贴图的对比\nconst materialFlat = new THREE.MeshStandardMaterial({\n  map: baseColorTexture,\n  roughness: 0.5,\n  metalness: 0.0\n})\n\nconst meshFlat = new THREE.Mesh(geometry, materialFlat)\nmeshFlat.position.set(6, 0, 0)\nmeshFlat.rotation.x = -Math.PI / 2\nscene.add(meshFlat)"
+        }
+      ]
+    },
+    {
+      "id": "lighting-shadow",
+      "name": "光照阴影",
+      "description": "物理光照、阴影映射、HDR照明",
+      "icon": "sun",
+      "items": [
+        {
+          "id": "basic-lighting",
+          "title": "基础光照",
+          "description": "理解Three.js中的各种光照类型",
+          "difficulty": "入门",
+          "tags": ["光照", "基础", "类型"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Different%20light%20types%20in%20Three.js%20point%20spot%20directional%20ambient%20illuminating%20objects&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\n// 环境光\nconst ambientLight = new THREE.AmbientLight(0x404040, 0.5)\nscene.add(ambientLight)\n\n// 方向光\nconst directionalLight = new THREE.DirectionalLight(0xffffff, 1)\ndirectionalLight.position.set(5, 5, 5)\nscene.add(directionalLight)\n\n// 点光源\nconst pointLight = new THREE.PointLight(0xff0000, 1, 10)\npointLight.position.set(3, 2, 0)\nscene.add(pointLight)\n\n// 聚光灯\nconst spotLight = new THREE.SpotLight(0x00ff00, 1)\nspotLight.position.set(-3, 5, 0)\nspotLight.angle = Math.PI / 6\nspotLight.penumbra = 0.2\nspotLight.decay = 2\nspotLight.distance = 50\nscene.add(spotLight)\n\n// 区域光\nconst rectAreaLight = new THREE.RectAreaLight(0x0000ff, 1, 4, 4)\nrectAreaLight.position.set(0, 3, -5)\nrectAreaLight.lookAt(0, 0, 0)\nscene.add(rectAreaLight)\n\n// 灯光辅助\nscene.add(new THREE.PointLightHelper(pointLight, 0.3))\nscene.add(new THREE.SpotLightHelper(spotLight))\nscene.add(new THREE.DirectionalLightHelper(directionalLight, 1))"
+        },
+        {
+          "id": "shadow-mapping",
+          "title": "阴影映射",
+          "description": "实现逼真的阴影效果",
+          "difficulty": "中级",
+          "tags": ["阴影", "渲染", "真实感"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Realistic%20shadows%20in%20Three.js%20scene%20with%20objects%20casting%20soft%20shadows%20on%20floor&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\nrenderer.shadowMap.enabled = true\nrenderer.shadowMap.type = THREE.PCFSoftShadowMap\n\n// 平面接收阴影\nconst planeGeometry = new THREE.PlaneGeometry(20, 20)\nconst planeMaterial = new THREE.MeshStandardMaterial({ \n  color: 0x808080,\n  roughness: 0.8\n})\nconst plane = new THREE.Mesh(planeGeometry, planeMaterial)\nplane.rotation.x = -Math.PI / 2\nplane.receiveShadow = true\nscene.add(plane)\n\n// 立方体投射阴影\nconst cubeGeometry = new THREE.BoxGeometry(2, 2, 2)\nconst cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 })\nconst cube = new THREE.Mesh(cubeGeometry, cubeMaterial)\ncube.position.set(0, 1, 0)\ncube.castShadow = true\ncube.receiveShadow = true\nscene.add(cube)\n\n// 球体投射阴影\nconst sphereGeometry = new THREE.SphereGeometry(1, 32, 32)\nconst sphereMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff })\nconst sphere = new THREE.Mesh(sphereGeometry, sphereMaterial)\nsphere.position.set(3, 1.5, -2)\nsphere.castShadow = true\nsphere.receiveShadow = true\nscene.add(sphere)\n\n// 聚光灯\nconst spotLight = new THREE.SpotLight(0xffffff, 2)\nspotLight.position.set(5, 10, 5)\nspotLight.angle = Math.PI / 6\nspotLight.penumbra = 0.5\nspotLight.decay = 2\nspotLight.distance = 50\nspotLight.castShadow = true\n\n// 阴影质量设置\nspotLight.shadow.mapSize.width = 2048\nspotLight.shadow.mapSize.height = 2048\nspotLight.shadow.camera.near = 0.5\nspotLight.shadow.camera.far = 50\nspotLight.shadow.bias = -0.0001\n\nscene.add(spotLight)"
+        }
+      ]
+    },
+    {
+      "id": "animation-interaction",
+      "name": "动画交互",
+      "description": "骨骼动画、补间动画、拾取交互",
+      "icon": "play",
+      "items": [
+        {
+          "id": "tween-animation",
+          "title": "补间动画",
+          "description": "使用GSAP实现流畅的补间动画",
+          "difficulty": "入门",
+          "tags": ["GSAP", "动画", "补间"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Tween%20animation%20showing%20objects%20moving%20rotating%20scaling%20with%20smooth%20easing%20effects&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\nimport gsap from 'gsap'\n\nconst cube = new THREE.Mesh(\n  new THREE.BoxGeometry(1, 1, 1),\n  new THREE.MeshStandardMaterial({ color: 0x6366f1 })\n)\nscene.add(cube)\n\n// 基础动画\ngsap.to(cube.position, {\n  x: 3,\n  duration: 2,\n  ease: 'power2.inOut',\n  repeat: -1,\n  yoyo: true\n})\n\n// 旋转动画\ngsap.to(cube.rotation, {\n  x: Math.PI * 2,\n  y: Math.PI * 2,\n  duration: 4,\n  ease: 'none',\n  repeat: -1\n})\n\n// 缩放动画\ngsap.to(cube.scale, {\n  x: 1.5,\n  y: 1.5,\n  z: 1.5,\n  duration: 1,\n  ease: 'elastic.out(1, 0.3)',\n  repeat: -1,\n  yoyo: true,\n  yoyoEase: 'bounce.out'\n})\n\n// 材质颜色动画\nconst material = cube.material\ngsap.to(material.color, {\n  r: 1,\n  g: 0,\n  b: 0,\n  duration: 2,\n  ease: 'sine.inOut',\n  repeat: -1,\n  yoyo: true\n})\n\n// 时间线动画\nconst tl = gsap.timeline({ repeat: -1, yoyo: true })\ntl.to(cube.position, { x: 2, y: 1, duration: 1 })\n  .to(cube.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 0.5 }, '-=0.5')\n  .to(cube.rotation, { y: Math.PI, duration: 1 }, '-=0.25')\n  .to(cube.position, { x: -2, y: 0, duration: 1 })"
+        },
+        {
+          "id": "raycaster-picking",
+          "title": "射线检测与交互",
+          "description": "实现鼠标拾取和点击交互",
+          "difficulty": "中级",
+          "tags": ["Raycaster", "交互", "拾取"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Mouse%20raycasting%20interaction%20highlighting%20hovered%203D%20objects%20with%20glow%20effect&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\nconst raycaster = new THREE.Raycaster()\nconst mouse = new THREE.Vector2()\nlet intersects = []\nlet hoveredObject = null\n\n// 创建多个可交互的物体\nconst objects = []\nfor (let i = 0; i < 10; i++) {\n  const geometry = new THREE.SphereGeometry(0.5, 32, 32)\n  const material = new THREE.MeshStandardMaterial({ \n    color: 0x6366f1,\n    metalness: 0.3,\n    roughness: 0.4\n  })\n  const mesh = new THREE.Mesh(geometry, material)\n  mesh.position.set(\n    (Math.random() - 0.5) * 10,\n    (Math.random() - 0.5) * 10,\n    (Math.random() - 0.5) * 10\n  )\n  mesh.userData.originalColor = material.color.clone()\n  scene.add(mesh)\n  objects.push(mesh)\n}\n\n// 鼠标移动\ndocument.addEventListener('mousemove', (event) => {\n  mouse.x = (event.clientX / window.innerWidth) * 2 - 1\n  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1\n})\n\n// 点击事件\ndocument.addEventListener('click', (event) => {\n  raycaster.setFromCamera(mouse, camera)\n  intersects = raycaster.intersectObjects(objects)\n  \n  if (intersects.length > 0) {\n    const clickedObject = intersects[0].object\n    console.log('点击了:', clickedObject)\n    \n    // 动画效果\n    gsap.to(clickedObject.scale, {\n      x: 1.5,\n      y: 1.5,\n      z: 1.5,\n      duration: 0.2,\n      yoyo: true,\n      repeat: 1\n    })\n  }\n})\n\n// 每一帧检测悬停\nfunction updateHover() {\n  raycaster.setFromCamera(mouse, camera)\n  intersects = raycaster.intersectObjects(objects)\n  \n  // 恢复之前悬停物体的颜色\n  if (hoveredObject) {\n    hoveredObject.material.color.copy(hoveredObject.userData.originalColor)\n    hoveredObject = null\n  }\n  \n  // 设置新悬停物体的颜色\n  if (intersects.length > 0) {\n    hoveredObject = intersects[0].object\n    hoveredObject.material.color.set(0xffff00)\n  }\n}\n\nfunction animate() {\n  requestAnimationFrame(animate)\n  updateHover()\n  renderer.render(scene, camera)\n}\n\nanimate()"
+        }
+      ]
+    },
+    {
+      "id": "model-import",
+      "name": "模型导入",
+      "description": "glTF加载器、模型优化、LOD",
+      "icon": "import",
+      "items": [
+        {
+          "id": "gltf-loader",
+          "title": "glTF模型加载",
+          "description": "加载和显示glTF/GLB格式的3D模型",
+          "difficulty": "入门",
+          "tags": ["glTF", "模型", "加载"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Detailed%203D%20glTF%20model%20of%20a%20car%20or%20character%20with%20PBR%20materials%20in%20Three.js%20scene&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\nimport { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'\nimport { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'\n\nconst loader = new GLTFLoader()\nconst dracoLoader = new DRACOLoader()\ndracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')\nloader.setDRACOLoader(dracoLoader)\n\nloader.load(\n  'models/model.glb',\n  (gltf) => {\n    const model = gltf.scene\n    \n    // 遍历模型设置属性\n    model.traverse((child) => {\n      if (child.isMesh) {\n        child.castShadow = true\n        child.receiveShadow = true\n        \n        if (child.material) {\n          child.material.envMapIntensity = 1\n        }\n      }\n    })\n    \n    // 缩放和定位\n    model.scale.set(0.1, 0.1, 0.1)\n    model.position.y = -1\n    \n    scene.add(model)\n    \n    // 动画\n    const mixer = new THREE.AnimationMixer(model)\n    gltf.animations.forEach((clip) => {\n      mixer.clipAction(clip).play()\n    })\n    \n    // 动画更新\n    const clock = new THREE.Clock()\n    function animate() {\n      requestAnimationFrame(animate)\n      const delta = clock.getDelta()\n      if (mixer) mixer.update(delta)\n      renderer.render(scene, camera)\n    }\n    animate()\n  },\n  (xhr) => {\n    console.log(`${(xhr.loaded / xhr.total * 100)}% 已加载`)\n  },\n  (error) => {\n    console.error('加载失败:', error)\n  }\n)"
+        },
+        {
+          "id": "lod-optimization",
+          "title": "LOD模型优化",
+          "description": "使用LOD实现模型细节的动态切换",
+          "difficulty": "中级",
+          "tags": ["LOD", "优化", "性能"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=LOD%20levels%20of%20detail%20comparison%20high%20poly%20vs%20low%20poly%203D%20model%20showing%20distance%20based%20switching&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\nconst lod = new THREE.LOD()\n\n// 高细节模型\nconst highDetailGeometry = new THREE.SphereGeometry(1, 64, 64)\nconst highDetailMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 })\nconst highDetailMesh = new THREE.Mesh(highDetailGeometry, highDetailMaterial)\nlod.addLevel(highDetailMesh, 0)\n\n// 中细节模型\nconst midDetailGeometry = new THREE.SphereGeometry(1, 16, 16)\nconst midDetailMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 })\nconst midDetailMesh = new THREE.Mesh(midDetailGeometry, midDetailMaterial)\nlod.addLevel(midDetailMesh, 10)\n\n// 低细节模型\nconst lowDetailGeometry = new THREE.SphereGeometry(1, 8, 8)\nconst lowDetailMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff })\nconst lowDetailMesh = new THREE.Mesh(lowDetailGeometry, lowDetailMaterial)\nlod.addLevel(lowDetailMesh, 25)\n\n// 最简单的billboard\nconst billboardGeometry = new THREE.PlaneGeometry(2, 2)\nconst billboardMaterial = new THREE.MeshBasicMaterial({ \n  color: 0xffff00, \n  side: THREE.DoubleSide \n})\nconst billboard = new THREE.Mesh(billboardGeometry, billboardMaterial)\nlod.addLevel(billboard, 50)\n\nscene.add(lod)\n\n// 批量创建带LOD的物体\nfor (let i = 0; i < 100; i++) {\n  const objectLOD = lod.clone()\n  objectLOD.position.set(\n    (Math.random() - 0.5) * 200,\n    0,\n    (Math.random() - 0.5) * 200\n  )\n  scene.add(objectLOD)\n}\n\n// LOD更新由Three.js自动处理\n// 也可以手动指定查看距离\nfunction animate() {\n  requestAnimationFrame(animate)\n  lod.update(camera)  // 手动更新\n  renderer.render(scene, camera)\n}"
+        }
+      ]
+    },
+    {
+      "id": "post-effects",
+      "name": "后期特效",
+      "description": "着色器、后期处理链、抗锯齿",
+      "icon": "effects",
+      "items": [
+        {
+          "id": "unreal-bloom",
+          "title": "虚幻风格泛光",
+          "description": "实现高质量的泛光效果",
+          "difficulty": "高级",
+          "tags": ["泛光", "后期处理", "视觉效果"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Unreal%20Engine%20style%20bloom%20effect%20with%20glowing%20objects%20and%20colorful%20light%20streaks&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\nimport { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'\nimport { RenderPass } from 'three/addons/postprocessing/RenderPass.js'\nimport { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'\n\n// 创建Composer\nconst composer = new EffectComposer(renderer)\n\n// 渲染通道\nconst renderPass = new RenderPass(scene, camera)\ncomposer.addPass(renderPass)\n\n// 泛光通道\nconst bloomPass = new UnrealBloomPass(\n  new THREE.Vector2(window.innerWidth, window.innerHeight),\n  1.5,   // strength\n  0.4,   // radius\n  0.85   // threshold\n)\ncomposer.addPass(bloomPass)\n\n// 创建发光物体\nconst glowMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff })\nconst sphere = new THREE.Mesh(\n  new THREE.SphereGeometry(1, 32, 32),\n  glowMaterial\n)\nscene.add(sphere)\n\n// 多个发光点\nconst lights = []\nfor (let i = 0; i < 20; i++) {\n  const light = new THREE.PointLight(\n    new THREE.Color().setHSL(Math.random(), 1, 0.5),\n    2,\n    10\n  )\n  light.position.set(\n    (Math.random() - 0.5) * 20,\n    (Math.random() - 0.5) * 20,\n    (Math.random() - 0.5) * 20\n  )\n  \n  const bulbGeometry = new THREE.SphereGeometry(0.2, 16, 16)\n  const bulbMaterial = new THREE.MeshBasicMaterial({ \n    color: light.color \n  })\n  const bulb = new THREE.Mesh(bulbGeometry, bulbMaterial)\n  light.add(bulb)\n  \n  scene.add(light)\n  lights.push(light)\n}\n\n// 动画循环\nfunction animate() {\n  requestAnimationFrame(animate)\n  \n  const time = Date.now() * 0.001\n  lights.forEach((light, i) => {\n    light.position.x = Math.sin(time + i) * 5\n    light.position.y = Math.cos(time * 0.7 + i) * 5\n    light.position.z = Math.sin(time * 1.3 + i) * 5\n  })\n  \n  composer.render()\n}\n\nanimate()"
+        }
+      ]
+    },
+    {
+      "id": "physics-engine",
+      "name": "物理引擎",
+      "description": "碰撞检测、刚体物理、布料模拟",
+      "icon": "physics",
+      "items": [
+        {
+          "id": "cannon-basics",
+          "title": "Cannon.js基础",
+          "description": "使用Cannon.js实现物理模拟",
+          "difficulty": "中级",
+          "tags": ["Cannon.js", "物理", "碰撞"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Physics%20simulation%20with%20falling%20balls%20boxes%20and%20collisions%20in%203D%20environment&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\nimport * as CANNON from 'cannon-es'\n\n// 创建物理世界\nconst world = new CANNON.World()\nworld.gravity.set(0, -9.82, 0)\nworld.broadphase = new CANNON.NaiveBroadphase()\n\n// 地面\nconst groundShape = new CANNON.Plane()\nconst groundBody = new CANNON.Body({ mass: 0 })\ngroundBody.addShape(groundShape)\ngroundBody.quaternion.setFromEulerAngles(-Math.PI / 2, 0, 0)\nworld.addBody(groundBody)\n\n// 地面视觉\nconst groundGeometry = new THREE.PlaneGeometry(20, 20)\nconst groundMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 })\nconst groundMesh = new THREE.Mesh(groundGeometry, groundMaterial)\ngroundMesh.rotation.x = -Math.PI / 2\ngroundMesh.receiveShadow = true\nscene.add(groundMesh)\n\n// 物体列表\nconst objects = []\n\n// 创建下落的盒子\nfunction createBox() {\n  const shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5))\n  const body = new CANNON.Body({ mass: 1 })\n  body.addShape(shape)\n  body.position.set(\n    (Math.random() - 0.5) * 10,\n    5 + Math.random() * 5,\n    (Math.random() - 0.5) * 10\n  )\n  world.addBody(body)\n  \n  const geometry = new THREE.BoxGeometry(1, 1, 1)\n  const material = new THREE.MeshStandardMaterial({ \n    color: Math.random() * 0xffffff \n  })\n  const mesh = new THREE.Mesh(geometry, material)\n  mesh.castShadow = true\n  mesh.receiveShadow = true\n  scene.add(mesh)\n  \n  objects.push({ body, mesh })\n}\n\n// 创建下落的球体\nfunction createSphere() {\n  const radius = 0.5\n  const shape = new CANNON.Sphere(radius)\n  const body = new CANNON.Body({ mass: 1 })\n  body.addShape(shape)\n  body.position.set(\n    (Math.random() - 0.5) * 10,\n    5 + Math.random() * 5,\n    (Math.random() - 0.5) * 10\n  )\n  world.addBody(body)\n  \n  const geometry = new THREE.SphereGeometry(radius, 32, 32)\n  const material = new THREE.MeshStandardMaterial({ \n    color: Math.random() * 0xffffff \n  })\n  const mesh = new THREE.Mesh(geometry, material)\n  mesh.castShadow = true\n  mesh.receiveShadow = true\n  scene.add(mesh)\n  \n  objects.push({ body, mesh })\n}\n\n// 定时创建物体\nsetInterval(() => {\n  if (objects.length < 50) {\n    Math.random() > 0.5 ? createBox() : createSphere()\n  }\n}, 500)\n\n// 物理更新\nconst clock = new THREE.Clock()\nfunction animate() {\n  requestAnimationFrame(animate)\n  \n  const delta = Math.min(clock.getDelta(), 0.1)\n  world.step(1 / 60, delta, 3)\n  \n  objects.forEach(({ body, mesh }) => {\n    mesh.position.copy(body.position)\n    mesh.quaternion.copy(body.quaternion)\n  })\n  \n  renderer.render(scene, camera)\n}\n\nanimate()"
+        }
+      ]
+    },
+    {
+      "id": "particle-system",
+      "name": "粒子系统",
+      "description": "GPU粒子、天气特效、火焰烟雾",
+      "icon": "particles",
+      "items": [
+        {
+          "id": "basic-particles",
+          "title": "基础粒子系统",
+          "description": "创建简单的粒子效果",
+          "difficulty": "入门",
+          "tags": ["粒子", "基础", "效果"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Particle%20system%20with%20colorful%20floating%20dots%20glowing%20and%20moving%20in%20space&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\nconst particleCount = 10000\nconst geometry = new THREE.BufferGeometry()\nconst positions = new Float32Array(particleCount * 3)\nconst colors = new Float32Array(particleCount * 3)\nconst sizes = new Float32Array(particleCount)\n\nconst color = new THREE.Color()\n\nfor (let i = 0; i < particleCount; i++) {\n  positions[i * 3] = (Math.random() - 0.5) * 20\n  positions[i * 3 + 1] = (Math.random() - 0.5) * 20\n  positions[i * 3 + 2] = (Math.random() - 0.5) * 20\n  \n  color.setHSL(Math.random(), 1, 0.5)\n  colors[i * 3] = color.r\n  colors[i * 3 + 1] = color.g\n  colors[i * 3 + 2] = color.b\n  \n  sizes[i] = Math.random() * 2\n}\n\ngeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))\ngeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))\ngeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1))\n\nconst material = new THREE.PointsMaterial({\n  size: 0.1,\n  vertexColors: true,\n  sizeAttenuation: true,\n  transparent: true,\n  opacity: 0.8,\n  blending: THREE.AdditiveBlending\n})\n\nconst particles = new THREE.Points(geometry, material)\nscene.add(particles)\n\n// 动画\nfunction animate() {\n  requestAnimationFrame(animate)\n  \n  const positions = particles.geometry.attributes.position.array\n  const time = Date.now() * 0.001\n  \n  for (let i = 0; i < particleCount; i++) {\n    positions[i * 3 + 1] += 0.01\n    \n    if (positions[i * 3 + 1] > 10) {\n      positions[i * 3 + 1] = -10\n    }\n  }\n  \n  particles.geometry.attributes.position.needsUpdate = true\n  particles.rotation.y = time * 0.05\n  \n  renderer.render(scene, camera)\n}\n\nanimate()"
+        },
+        {
+          "id": "fire-effect",
+          "title": "火焰效果",
+          "description": "使用粒子系统模拟火焰",
+          "difficulty": "高级",
+          "tags": ["火焰", "粒子", "特效"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Realistic%20fire%20particle%20effect%20with%20orange%20yellow%20red%20colors%20rising%20upwards%20with%20glow&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\n\nclass FireSystem {\n  constructor(scene, count = 5000) {\n    this.scene = scene\n    this.count = count\n    this.particles = []\n    this.init()\n  }\n  \n  init() {\n    const geometry = new THREE.BufferGeometry()\n    const positions = new Float32Array(this.count * 3)\n    const colors = new Float32Array(this.count * 3)\n    const sizes = new Float32Array(this.count)\n    const velocities = []\n    const lives = []\n    \n    this.color = new THREE.Color()\n    \n    for (let i = 0; i < this.count; i++) {\n      this.resetParticle(i, positions, velocities, lives, sizes)\n    }\n    \n    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))\n    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))\n    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1))\n    \n    const texture = this.createFireTexture()\n    \n    this.material = new THREE.PointsMaterial({\n      size: 0.3,\n      vertexColors: true,\n      sizeAttenuation: true,\n      transparent: true,\n      opacity: 1,\n      blending: THREE.AdditiveBlending,\n      map: texture,\n      depthWrite: false\n    })\n    \n    this.points = new THREE.Points(geometry, this.material)\n    this.scene.add(this.points)\n    \n    this.positions = positions\n    this.velocities = velocities\n    this.lives = lives\n    this.sizes = sizes\n    this.maxLives = Array(this.count).fill(1)\n  }\n  \n  createFireTexture() {\n    const canvas = document.createElement('canvas')\n    canvas.width = 128\n    canvas.height = 128\n    const ctx = canvas.getContext('2d')\n    \n    const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64)\n    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)')\n    gradient.addColorStop(0.2, 'rgba(255, 200, 50, 1)')\n    gradient.addColorStop(0.5, 'rgba(255, 100, 0, 0.8)')\n    gradient.addColorStop(1, 'rgba(255, 50, 0, 0)')\n    \n    ctx.fillStyle = gradient\n    ctx.fillRect(0, 0, 128, 128)\n    \n    const texture = new THREE.CanvasTexture(canvas)\n    texture.needsUpdate = true\n    return texture\n  }\n  \n  resetParticle(i, positions, velocities, lives, sizes) {\n    const radius = Math.random() * 0.5\n    const angle = Math.random() * Math.PI * 2\n    \n    positions[i * 3] = Math.cos(angle) * radius\n    positions[i * 3 + 1] = 0\n    positions[i * 3 + 2] = Math.sin(angle) * radius\n    \n    velocities[i] = {\n      x: (Math.random() - 0.5) * 0.1,\n      y: Math.random() * 0.2 + 0.1,\n      z: (Math.random() - 0.5) * 0.1\n    }\n    \n    lives[i] = Math.random() * 0.5 + 0.5\n    this.maxLives[i] = lives[i]\n    sizes[i] = Math.random() * 0.5 + 0.2\n  }\n  \n  update(delta) {\n    const positions = this.positions\n    const colors = this.points.geometry.attributes.color.array\n    const sizes = this.points.geometry.attributes.size.array\n    \n    for (let i = 0; i < this.count; i++) {\n      this.lives[i] -= delta * 0.5\n      \n      if (this.lives[i] <= 0) {\n        this.resetParticle(i, positions, this.velocities, this.lives, sizes)\n        continue\n      }\n      \n      positions[i * 3] += this.velocities[i].x\n      positions[i * 3 + 1] += this.velocities[i].y\n      positions[i * 3 + 2] += this.velocities[i].z\n      \n      this.velocities[i].x += (Math.random() - 0.5) * 0.01\n      this.velocities[i].z += (Math.random() - 0.5) * 0.01\n      \n      const lifeRatio = this.lives[i] / this.maxLives[i]\n      \n      if (lifeRatio > 0.7) {\n        this.color.setRGB(1, 1, 0.5)\n      } else if (lifeRatio > 0.3) {\n        this.color.setRGB(1, 0.5 + lifeRatio * 0.5, 0)\n      } else {\n        this.color.setRGB(1, lifeRatio, 0)\n      }\n      \n      colors[i * 3] = this.color.r\n      colors[i * 3 + 1] = this.color.g\n      colors[i * 3 + 2] = this.color.b\n      \n      sizes[i] = this.sizes[i] * lifeRatio\n    }\n    \n    this.points.geometry.attributes.position.needsUpdate = true\n    this.points.geometry.attributes.color.needsUpdate = true\n    this.points.geometry.attributes.size.needsUpdate = true\n  }\n}\n\nconst fireSystem = new FireSystem(scene, 10000)\n\nconst clock = new THREE.Clock()\nfunction animate() {\n  requestAnimationFrame(animate)\n  const delta = clock.getDelta()\n  fireSystem.update(delta)\n  renderer.render(scene, camera)\n}\n\nanimate()"
+        }
+      ]
+    },
+    {
+      "id": "vr-ar",
+      "name": "VR/AR",
+      "description": "WebXR集成、VR控制器、AR标记",
+      "icon": "vr",
+      "items": [
+        {
+          "id": "webxr-basics",
+          "title": "WebXR基础",
+          "description": "使用WebXR实现VR体验",
+          "difficulty": "中级",
+          "tags": ["WebXR", "VR", "虚拟现实"],
+          "previewImage": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=VR%20headset%20with%203D%20virtual%20environment%20showing%20controllers%20and%20immersive%20scene&image_size=landscape_16_9",
+          "demoUrl": "",
+          "codeSnippet": "import * as THREE from 'three'\nimport { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js'\nimport { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js'\n\nrenderer.xr.enabled = true\n\n// VR按钮\nconst button = document.createElement('button')\nbutton.textContent = '进入VR'\nbutton.style.cssText = `\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  transform: translateX(-50%);\n  padding: 12px 24px;\n  background: #6366f1;\n  color: white;\n  border: none;\n  border-radius: 8px;\n  cursor: pointer;\n  font-size: 16px;\n`\ndocument.body.appendChild(button)\n\nbutton.addEventListener('click', () => {\n  renderer.xr.getSession() ? endSession() : startSession()\n})\n\nasync function startSession() {\n  try {\n    const session = await navigator.xr.requestSession('immersive-vr', {\n      requiredFeatures: ['local-floor']\n    })\n    await renderer.xr.setSession(session)\n    button.textContent = '退出VR'\n    onSessionStarted()\n  } catch (err) {\n    console.error('VR不可用:', err)\n  }\n}\n\nfunction endSession() {\n  renderer.xr.getSession().end()\n  button.textContent = '进入VR'\n}\n\nfunction onSessionStarted() {\n  // 控制器\n  const controller1 = renderer.xr.getController(0)\n  const controller2 = renderer.xr.getController(1)\n  \n  scene.add(controller1)\n  scene.add(controller2)\n  \n  // 控制器模型\n  const controllerModelFactory = new XRControllerModelFactory()\n  const controllerGrip1 = renderer.xr.getControllerGrip(0)\n  const controllerGrip2 = renderer.xr.getControllerGrip(1)\n  \n  controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1))\n  controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2))\n  \n  scene.add(controllerGrip1)\n  scene.add(controllerGrip2)\n  \n  // 控制器射线\n  const lineGeometry = new THREE.BufferGeometry().setFromPoints([\n    new THREE.Vector3(0, 0, 0),\n    new THREE.Vector3(0, 0, -10)\n  ])\n  \n  const line = new THREE.Line(lineGeometry)\n  line.scale.z = 5\n  \n  controller1.add(line.clone())\n  controller2.add(line.clone())\n  \n  // 选择事件\n  controller1.addEventListener('selectstart', onSelectStart)\n  controller1.addEventListener('selectend', onSelectEnd)\n  controller2.addEventListener('selectstart', onSelectStart)\n  controller2.addEventListener('selectend', onSelectEnd)\n}\n\nlet selectedObject = null\nconst raycaster = new THREE.Raycaster()\nconst tempMatrix = new THREE.Matrix4()\n\nfunction onSelectStart(event) {\n  const controller = event.target\n  tempMatrix.identity().extractRotation(controller.matrixWorld)\n  \n  raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld)\n  raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix)\n  \n  const intersects = raycaster.intersectObjects(scene.children, true)\n  \n  if (intersects.length > 0) {\n    selectedObject = intersects[0].object\n    controller.attach(selectedObject)\n  }\n}\n\nfunction onSelectEnd() {\n  if (selectedObject) {\n    scene.attach(selectedObject)\n    selectedObject = null\n  }\n}\n\n// 渲染循环\nrenderer.setAnimationLoop((time, frame) => {\n  if (frame) {\n    const referenceSpace = renderer.xr.getReferenceSpace()\n    // 这里可以添加逻辑\n  }\n  renderer.render(scene, camera)\n})\n"
+        }
+      ]
+    }
+  ]
+}
