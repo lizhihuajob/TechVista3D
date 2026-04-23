@@ -35,12 +35,28 @@
         </header>
         
         <div class="case-preview">
-          <div class="preview-container">
-            <img :src="caseItem.previewImage" :alt="caseItem.title" class="preview-image" />
-            <div class="preview-overlay">
-              <span class="preview-placeholder">预览区域</span>
-              <span class="preview-hint">可在此处嵌入实际Three.js演示</span>
-            </div>
+          <div class="preview-container" :class="{ 'has-component': hasComponent }">
+            <template v-if="hasComponent && caseComponent">
+              <component 
+                :is="caseComponent" 
+                ref="caseComponentRef"
+                class="case-demo-component"
+              />
+            </template>
+            <template v-else>
+              <img :src="caseItem.previewImage" :alt="caseItem.title" class="preview-image" />
+              <div class="preview-overlay">
+                <span class="preview-placeholder">预览区域</span>
+                <span class="preview-hint">案例组件开发中，敬请期待</span>
+              </div>
+            </template>
+          </div>
+          
+          <div class="screenshot-toolbar" v-if="hasComponent && caseComponentRef">
+            <button @click="takeScreenshot" class="screenshot-btn">
+              📷 截图
+            </button>
+            <span class="screenshot-hint">点击截图可下载当前画面</span>
           </div>
         </div>
         
@@ -123,14 +139,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, defineAsyncComponent, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import CodeBlock from '@/components/common/CodeBlock.vue'
 import threejsData from '@/data/threejs.json'
+import { getThreejsComponent } from '@/components/cases'
 
 const route = useRoute()
 
 const categories = ref(threejsData.categories)
+const caseComponent = ref(null)
+const caseComponentRef = ref(null)
+const hasComponent = ref(false)
 
 const category = computed(() => {
   return categories.value.find(c => c.id === route.params.category)
@@ -170,12 +190,51 @@ const relatedCases = computed(() => {
     .slice(0, 3)
 })
 
-watch(() => route.params.id, () => {
+const loadCaseComponent = async (caseId) => {
+  caseComponent.value = null
+  hasComponent.value = false
+  
+  const componentLoader = getThreejsComponent(caseId)
+  if (componentLoader) {
+    try {
+      const loadedComponent = await componentLoader()
+      caseComponent.value = loadedComponent.default || loadedComponent
+      hasComponent.value = true
+    } catch (error) {
+      console.warn(`Case component ${caseId} not found or failed to load:`, error)
+      hasComponent.value = false
+    }
+  }
+}
+
+const takeScreenshot = () => {
+  if (caseComponentRef.value && caseComponentRef.value.getScreenshot) {
+    const dataUrl = caseComponentRef.value.getScreenshot()
+    if (dataUrl) {
+      const link = document.createElement('a')
+      link.download = `${caseItem.value?.title || 'screenshot'}.png`
+      link.href = dataUrl
+      link.click()
+    }
+  }
+}
+
+watch(() => route.params.id, (newId) => {
   window.scrollTo(0, 0)
+  if (newId) {
+    loadCaseComponent(newId)
+  }
 })
 
 onMounted(() => {
   window.scrollTo(0, 0)
+  if (route.params.id) {
+    loadCaseComponent(route.params.id)
+  }
+})
+
+onUnmounted(() => {
+  caseComponent.value = null
 })
 </script>
 
@@ -215,7 +274,7 @@ onMounted(() => {
   }
   
   .case-content {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: $spacing-xl 0;
   }
@@ -294,6 +353,17 @@ onMounted(() => {
       position: relative;
       aspect-ratio: 16/9;
       background: $bg-secondary;
+      
+      &.has-component {
+        min-height: 500px;
+        aspect-ratio: auto;
+      }
+      
+      .case-demo-component {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
     }
     
     .preview-image {
@@ -328,6 +398,36 @@ onMounted(() => {
       font-size: $font-size-xs;
       opacity: 0.7;
     }
+  }
+  
+  .screenshot-toolbar {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-md;
+    background: $bg-secondary;
+    border-top: 1px solid $border-color;
+  }
+  
+  .screenshot-btn {
+    padding: $spacing-sm $spacing-md;
+    background: $primary-color;
+    color: white;
+    border: none;
+    border-radius: $border-radius;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: $primary-hover;
+      transform: translateY(-2px);
+    }
+  }
+  
+  .screenshot-hint {
+    font-size: $font-size-xs;
+    color: $text-muted;
   }
   
   .case-body {
