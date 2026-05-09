@@ -1,0 +1,304 @@
+{
+  "categories": [
+    {
+      "id": "layer-management",
+      "name": "图层管理",
+      "description": "WMTS/WMS/TMS、矢量瓦片、影像图层",
+      "icon": "layers",
+      "items": [
+        {
+          "id": "wmts-layer",
+          "title": "WMTS图层加载",
+          "description": "加载OGC WMTS标准服务，支持天地图、高德等瓦片服务",
+          "difficulty": "入门",
+          "tags": ["WMTS", "天地图", "瓦片服务"],
+          "previewImage": "https://picsum.photos/seed/cesium-wmts/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const imageryProvider = new Cesium.WebMapTileServiceImageryProvider({\n  url: 'http://t0.tianditu.gov.cn/img_w/wmts',\n  layer: 'img',\n  style: 'default',\n  format: 'tiles',\n  tileMatrixSetID: 'w',\n  maximumLevel: 18\n})\n\nviewer.imageryLayers.addImageryProvider(imageryProvider)"
+        },
+        {
+          "id": "wms-layer",
+          "title": "WMS图层加载",
+          "description": "加载OGC WMS标准服务，支持动态地图渲染",
+          "difficulty": "入门",
+          "tags": ["WMS", "GeoServer", "动态图层"],
+          "previewImage": "https://picsum.photos/seed/cesium-wms/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const wmsProvider = new Cesium.WebMapServiceImageryProvider({\n  url: 'http://localhost:8080/geoserver/wms',\n  layers: 'workspace:layer_name',\n  parameters: {\n    service: 'WMS',\n    format: 'image/png',\n    transparent: true\n  }\n})\n\nviewer.imageryLayers.addImageryProvider(wmsProvider)"
+        },
+        {
+          "id": "vector-tiles",
+          "title": "矢量瓦片图层",
+          "description": "加载Mapbox矢量瓦片，实现高性能矢量数据渲染",
+          "difficulty": "中级",
+          "tags": ["矢量瓦片", "Mapbox", "高性能"],
+          "previewImage": "https://picsum.photos/seed/cesium-vector/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const osmBuildings = viewer.scene.primitives.add(\n  new Cesium.createOsmBuildings()\n)\n\nviewer.camera.flyTo({\n  destination: Cesium.Cartesian3.fromDegrees(\n    -74.006, 40.7128, 600\n  )\n})"
+        }
+      ]
+    },
+    {
+      "id": "skybox",
+      "name": "天空盒",
+      "description": "星空、云层、大气散射",
+      "icon": "sky",
+      "items": [
+        {
+          "id": "star-sky",
+          "title": "星空背景",
+          "description": "创建逼真的星空背景，支持星星闪烁和银河效果",
+          "difficulty": "中级",
+          "tags": ["星空", "背景", "夜间模式"],
+          "previewImage": "https://picsum.photos/seed/cesium-stars/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "viewer.scene.skyBox = new Cesium.SkyBox({\n  sources: {\n    positiveX: 'skybox_px.jpg',\n    negativeX: 'skybox_nx.jpg',\n    positiveY: 'skybox_py.jpg',\n    negativeY: 'skybox_ny.jpg',\n    positiveZ: 'skybox_pz.jpg',\n    negativeZ: 'skybox_nz.jpg'\n  }\n})\n\nviewer.scene.skyAtmosphere.show = false"
+        },
+        {
+          "id": "cloud-layer",
+          "title": "动态云层",
+          "description": "创建动态流动的云层效果，模拟真实天空",
+          "difficulty": "高级",
+          "tags": ["云层", "动态", "视觉效果"],
+          "previewImage": "https://picsum.photos/seed/cesium-clouds/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const cloudPrimitive = new Cesium.CloudCollection()\nviewer.scene.primitives.add(cloudPrimitive)\n\nfor (let i = 0; i < 20; i++) {\n  cloudPrimitive.add({\n    position: Cesium.Cartesian3.fromDegrees(\n      Math.random() * 360 - 180,\n      Math.random() * 180 - 90,\n      10000 + Math.random() * 5000\n    ),\n    scale: 2000 + Math.random() * 1000,\n    maximumSize: 100\n  })\n}"
+        }
+      ]
+    },
+    {
+      "id": "billboard-label",
+      "name": "标牌标注",
+      "description": "Billboard、Label、点位聚合",
+      "icon": "label",
+      "items": [
+        {
+          "id": "billboard-basic",
+          "title": "Billboard基础",
+          "description": "使用Billboard创建图片标记，支持缩放、旋转、颜色",
+          "difficulty": "入门",
+          "tags": ["Billboard", "标记", "图标"],
+          "previewImage": "https://picsum.photos/seed/cesium-billboard/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "viewer.entities.add({\n  position: Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883),\n  billboard: {\n    image: 'marker.png',\n    width: 32,\n    height: 32,\n    color: Cesium.Color.RED,\n    scale: 1.5,\n    verticalOrigin: Cesium.VerticalOrigin.BOTTOM\n  }\n})"
+        },
+        {
+          "id": "label-basic",
+          "title": "Label标签",
+          "description": "创建文字标签，支持自定义样式和动态更新",
+          "difficulty": "入门",
+          "tags": ["Label", "文字", "标注"],
+          "previewImage": "https://picsum.photos/seed/cesium-label/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "viewer.entities.add({\n  position: Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883),\n  label: {\n    text: 'Philadelphia',\n    font: '24px sans-serif',\n    fillColor: Cesium.Color.WHITE,\n    outlineColor: Cesium.Color.BLACK,\n    outlineWidth: 2,\n    style: Cesium.LabelStyle.FILL_AND_OUTLINE,\n    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,\n    pixelOffset: new Cesium.Cartesian2(0, -10)\n  }\n})"
+        },
+        {
+          "id": "point-clustering",
+          "title": "点位聚合",
+          "description": "实现大量点位的聚合显示，优化性能",
+          "difficulty": "中级",
+          "tags": ["聚合", "性能优化", "大数据"],
+          "previewImage": "https://picsum.photos/seed/cesium-cluster/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const dataSource = new Cesium.CustomDataSource('clusters')\nviewer.dataSources.add(dataSource)\n\ndataSource.clustering.enabled = true\ndataSource.clustering.pixelRange = 50\ndataSource.clustering.minimumClusterSize = 3\n\nfor (let i = 0; i < 1000; i++) {\n  dataSource.entities.add({\n    position: Cesium.Cartesian3.fromDegrees(\n      Math.random() * 360 - 180,\n      Math.random() * 180 - 90\n    ),\n    billboard: { image: 'marker.png', scale: 0.5 }\n  })\n}"
+        }
+      ]
+    },
+    {
+      "id": "basic-graphics",
+      "name": "基础图形",
+      "description": "Primitive、Geometry、CustomShader",
+      "icon": "shapes",
+      "items": [
+        {
+          "id": "primitive-basic",
+          "title": "Primitive基础",
+          "description": "使用Primitive API创建高性能图形",
+          "difficulty": "中级",
+          "tags": ["Primitive", "高性能", "图形"],
+          "previewImage": "https://picsum.photos/seed/cesium-primitive/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const instances = []\nfor (let lon = -180.0; lon < 180.0; lon += 5.0) {\n  for (let lat = -80.0; lat < 80.0; lat += 5.0) {\n    instances.push(new Cesium.GeometryInstance({\n      geometry: Cesium.RectangleGeometry.fromDimensions({\n        dimensions: new Cesium.Cartesian2(400000, 400000),\n        vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT\n      }),\n      modelMatrix: Cesium.Transforms.eastNorthUpToFixedFrame(\n        Cesium.Cartesian3.fromDegrees(lon, lat)\n      ),\n      attributes: {\n        color: Cesium.ColorGeometryInstanceAttribute.fromColor(\n          Cesium.Color.fromRandom({ alpha: 0.5 })\n        )\n      }\n    }))\n  }\n}\n\nviewer.scene.primitives.add(new Cesium.Primitive({\n  geometryInstances: instances,\n  appearance: new Cesium.PerInstanceColorAppearance()\n}))"
+        },
+        {
+          "id": "custom-shader",
+          "title": "自定义着色器",
+          "description": "使用CustomShader创建自定义渲染效果",
+          "difficulty": "高级",
+          "tags": ["Shader", "自定义", "视觉效果"],
+          "previewImage": "https://picsum.photos/seed/cesium-shader/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const customShader = new Cesium.CustomShader({\n  lightingModel: Cesium.LightingModel.UNLIT,\n  fragmentShaderText: `\n    void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material)\n    {\n      vec3 positionMC = fsInput.attributes.positionMC;\n      float height = positionMC.z;\n      float normalizedHeight = clamp(height / 1000.0, 0.0, 1.0);\n      \n      vec3 colorLow = vec3(0.0, 0.5, 1.0);\n      vec3 colorHigh = vec3(1.0, 0.5, 0.0);\n      material.diffuse = mix(colorLow, colorHigh, normalizedHeight);\n    }\n  `\n})\n\nconst tileset = viewer.scene.primitives.add(\n  new Cesium.Cesium3DTileset({\n    url: 'tileset.json',\n    customShader: customShader\n  })\n)"
+        }
+      ]
+    },
+    {
+      "id": "3d-models",
+      "name": "3D模型",
+      "description": "glTF/3DTiles、模型动画、材质",
+      "icon": "cube",
+      "items": [
+        {
+          "id": "gltf-loader",
+          "title": "glTF模型加载",
+          "description": "加载和显示glTF/GLB格式的3D模型",
+          "difficulty": "入门",
+          "tags": ["glTF", "3D模型", "加载"],
+          "previewImage": "https://picsum.photos/seed/cesium-gltf/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const entity = viewer.entities.add({\n  position: Cesium.Cartesian3.fromDegrees(-122.0, 45.0, 1000),\n  model: {\n    uri: 'model.gltf',\n    scale: 100,\n    minimumPixelSize: 64,\n    maximumScale: 200\n  }\n})\n\nviewer.zoomTo(entity)"
+        },
+        {
+          "id": "3dtiles-basic",
+          "title": "3D Tiles基础",
+          "description": "加载3D Tiles数据，实现海量模型渲染",
+          "difficulty": "中级",
+          "tags": ["3D Tiles", "海量数据", "LOD"],
+          "previewImage": "https://picsum.photos/seed/cesium-3dtiles/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const tileset = viewer.scene.primitives.add(\n  new Cesium.Cesium3DTileset({\n    url: 'http://localhost:8080/3dtiles/tileset.json',\n    maximumScreenSpaceError: 2,\n    maximumMemoryUsage: 512\n  })\n)\n\ntileset.readyPromise.then((tileset) => {\n  viewer.zoomTo(tileset)\n}).catch((error) => {\n  console.log('加载失败:', error)\n})"
+        },
+        {
+          "id": "model-animation",
+          "title": "模型动画",
+          "description": "控制模型动画播放，实现动态效果",
+          "difficulty": "中级",
+          "tags": ["动画", "骨骼动画", "动态"],
+          "previewImage": "https://picsum.photos/seed/cesium-animation/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "viewer.entities.add({\n  position: Cesium.Cartesian3.fromDegrees(-122.0, 45.0, 0),\n  model: {\n    uri: 'animated_model.gltf',\n    animations: {\n      play: true,\n      loop: Cesium.ModelAnimationLoop.REPEAT,\n      speedup: 1.5\n    }\n  }\n})\n\n// 或使用API控制\nviewer.scene.primitives.add(primitive).readyPromise.then((primitive) => {\n  const model = primitive.activeAnimations.add({\n    index: 0,\n    loop: Cesium.ModelAnimationLoop.REPEAT\n  })\n  model.start()\n})"
+        }
+      ]
+    },
+    {
+      "id": "radar-effects",
+      "name": "雷达特效",
+      "description": "扫描波、扇形区域、轨迹球",
+      "icon": "radar",
+      "items": [
+        {
+          "id": "radar-scan",
+          "title": "雷达扫描波",
+          "description": "创建动态雷达扫描效果，模拟真实雷达",
+          "difficulty": "高级",
+          "tags": ["雷达", "扫描", "动态效果"],
+          "previewImage": "https://picsum.photos/seed/cesium-radar/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "let angle = 0\nconst center = Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883)\nconst radius = 5000\n\nviewer.scene.preRender.addEventListener(() => {\n  angle += 0.02\n  \n  const material = new Cesium.ColorMaterialProperty(\n    Cesium.Color.fromHsl(angle % 1, 1, 0.5, 0.5)\n  )\n  \n  const endPoint = Cesium.Cartesian3.fromDegrees(\n    Cesium.Math.toDegrees(\n      Cesium.Cartographic.fromCartesian(center).longitude + angle\n    ),\n    Cesium.Cartographic.fromCartesian(center).latitude\n  )\n  \n  viewer.entities.add({\n    polyline: {\n      positions: [center, endPoint],\n      width: 2,\n      material: material\n    }\n  })\n})"
+        },
+        {
+          "id": "sector-area",
+          "title": "扇形区域",
+          "description": "创建扇形/锥形区域，用于雷达探测范围展示",
+          "difficulty": "中级",
+          "tags": ["扇形", "区域", "探测范围"],
+          "previewImage": "https://picsum.photos/seed/cesium-sector/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "function createSector(center, radius, startAngle, endAngle, color) {\n  const positions = [center]\n  const steps = 30\n  \n  for (let i = 0; i <= steps; i++) {\n    const angle = startAngle + (endAngle - startAngle) * (i / steps)\n    const point = Cesium.Cartesian3.fromDegrees(\n      Cesium.Math.toDegrees(\n        Cesium.Cartographic.fromCartesian(center).longitude + \n        Math.cos(angle) * radius / 111000\n      ),\n      Cesium.Math.toDegrees(\n        Cesium.Cartographic.fromCartesian(center).latitude + \n        Math.sin(angle) * radius / 111000\n      )\n    )\n    positions.push(point)\n  }\n  positions.push(center)\n  \n  return viewer.entities.add({\n    polygon: {\n      hierarchy: new Cesium.PolygonHierarchy(positions),\n      material: color.withAlpha(0.3),\n      outline: true,\n      outlineColor: color,\n      outlineWidth: 2\n    }\n  })\n}\n\ncreateSector(\n  Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883),\n  5000, 0, Math.PI / 2, Cesium.Color.RED\n)"
+        }
+      ]
+    },
+    {
+      "id": "visual-effects",
+      "name": "视觉特效",
+      "description": "后期处理、粒子系统、深度检测",
+      "icon": "sparkles",
+      "items": [
+        {
+          "id": "post-processing",
+          "title": "后期处理",
+          "description": "使用PostProcessStage实现后期处理效果",
+          "difficulty": "高级",
+          "tags": ["后期处理", "滤镜", "视觉效果"],
+          "previewImage": "https://picsum.photos/seed/cesium-postprocess/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const bloom = new Cesium.Bloom({\n  enabled: true,\n  glowOnly: false,\n  delta: 1,\n  sigma: 3.8,\n  stepSize: 5\n})\n\nconst nightVision = new Cesium.PostProcessStage({\n  fragmentShader: `\n    uniform sampler2D colorTexture;\n    in vec2 v_textureCoordinates;\n    \n    void main() {\n      vec4 color = texture(colorTexture, v_textureCoordinates);\n      float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));\n      out_FragColor = vec4(0.0, gray * 1.5, 0.0, color.a);\n    }\n  `\n})\n\nviewer.scene.postProcessStages.add(nightVision)"
+        },
+        {
+          "id": "particle-system",
+          "title": "粒子系统",
+          "description": "创建粒子效果，模拟火焰、烟雾、雨等",
+          "difficulty": "高级",
+          "tags": ["粒子", "特效", "动态"],
+          "previewImage": "https://picsum.photos/seed/cesium-particle/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const particleSystem = new Cesium.ParticleSystem({\n  image: 'particle.png',\n  startColor: Cesium.Color.RED.withAlpha(0.7),\n  endColor: Cesium.Color.YELLOW.withAlpha(0.3),\n  startScale: 8,\n  endScale: 2,\n  minimumParticleLife: 1,\n  maximumParticleLife: 3,\n  minimumSpeed: 5,\n  maximumSpeed: 10,\n  imageSize: new Cesium.Cartesian2(20, 20),\n  emissionRate: 100,\n  bursts: [\n    new Cesium.ParticleBurst({\n      time: 0,\n      minimum: 300,\n      maximum: 500\n    })\n  ],\n  lifetime: 16,\n  emitter: new Cesium.CircleEmitter(2000),\n  modelMatrix: Cesium.Transforms.eastNorthUpToFixedFrame(\n    Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883)\n  ),\n  emitterModelMatrix: Cesium.Matrix4.fromTranslation(\n    new Cesium.Cartesian3(0.0, 0.0, 0.0)\n  )\n})\n\nviewer.scene.primitives.add(particleSystem)"
+        }
+      ]
+    },
+    {
+      "id": "camera-control",
+      "name": "相机控制",
+      "description": "飞行路径、视角锁定、漫游模式",
+      "icon": "camera",
+      "items": [
+        {
+          "id": "fly-to-path",
+          "title": "飞行路径",
+          "description": "创建相机飞行路径，实现场景漫游效果",
+          "difficulty": "中级",
+          "tags": ["飞行", "路径", "漫游"],
+          "previewImage": "https://picsum.photos/seed/cesium-flypath/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const positions = [\n  Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883, 5000),\n  Cesium.Cartesian3.fromDegrees(-74.006, 40.7128, 5000),\n  Cesium.Cartesian3.fromDegrees(-71.0603, 42.3583, 5000),\n  Cesium.Cartesian3.fromDegrees(-77.0369, 38.9072, 5000)\n]\n\nconst property = new Cesium.SampledPositionProperty()\nconst start = Cesium.JulianDate.now()\nconst stop = Cesium.JulianDate.addSeconds(start, 30, new Cesium.JulianDate())\n\npositions.forEach((position, index) => {\n  const time = Cesium.JulianDate.addSeconds(\n    start, index * 10, new Cesium.JulianDate()\n  )\n  property.addSample(time, position)\n})\n\nviewer.camera.flyTo({\n  destination: positions[0],\n  orientation: {\n    heading: Cesium.Math.toRadians(0),\n    pitch: Cesium.Math.toRadians(-45),\n    roll: 0\n  },\n  duration: 3\n})\n\nviewer.clock.startTime = start.clone()\nviewer.clock.stopTime = stop.clone()\nviewer.clock.currentTime = start.clone()\nviewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP\nviewer.clock.multiplier = 1"
+        },
+        {
+          "id": "view-lock",
+          "title": "视角锁定",
+          "description": "锁定相机视角到特定实体或位置",
+          "difficulty": "入门",
+          "tags": ["锁定", "视角", "跟踪"],
+          "previewImage": "https://picsum.photos/seed/cesium-viewlock/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "const entity = viewer.entities.add({\n  position: Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883, 1000),\n  model: { uri: 'airplane.gltf', scale: 100 }\n})\n\nviewer.trackedEntity = entity\n\n// 或手动设置跟踪\nconst center = Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883)\nconst heading = Cesium.Math.toRadians(50)\nconst pitch = Cesium.Math.toRadians(-90)\nconst range = 5000\n\nviewer.camera.lookAt(\n  center,\n  new Cesium.HeadingPitchRange(heading, pitch, range)\n)\n\n// 解除锁定\nviewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)"
+        }
+      ]
+    },
+    {
+      "id": "measurement-analysis",
+      "name": "测量分析",
+      "description": "距离/面积/体积、通视分析、剖面",
+      "icon": "ruler",
+      "items": [
+        {
+          "id": "distance-measure",
+          "title": "距离测量",
+          "description": "实现两点之间的距离测量，支持地面距离",
+          "difficulty": "中级",
+          "tags": ["测量", "距离", "分析"],
+          "previewImage": "https://picsum.photos/seed/cesium-distance/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "function measureDistance(positions) {\n  if (positions.length < 2) return 0\n  \n  let totalDistance = 0\n  for (let i = 0; i < positions.length - 1; i++) {\n    const start = positions[i]\n    const end = positions[i + 1]\n    \n    const startCartographic = Cesium.Cartographic.fromCartesian(start)\n    const endCartographic = Cesium.Cartographic.fromCartesian(end)\n    \n    const geodesic = new Cesium.EllipsoidGeodesic(\n      startCartographic, endCartographic\n    )\n    totalDistance += geodesic.surfaceDistance\n  }\n  \n  return totalDistance\n}\n\n// 使用示例\nconst handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)\nconst positions = []\n\nhandler.setInputAction((movement) => {\n  const position = viewer.scene.pickPosition(movement.position)\n  if (Cesium.defined(position)) {\n    positions.push(position)\n    \n    viewer.entities.add({\n      position: position,\n      point: { pixelSize: 8, color: Cesium.Color.RED }\n    })\n    \n    if (positions.length >= 2) {\n      const distance = measureDistance(positions)\n      const midPoint = Cesium.Cartesian3.lerp(\n        positions[0], positions[1], 0.5, new Cesium.Cartesian3()\n      )\n      \n      viewer.entities.add({\n        position: midPoint,\n        label: {\n          text: `${(distance / 1000).toFixed(2)} km`,\n          font: '16px sans-serif',\n          fillColor: Cesium.Color.WHITE,\n          outlineColor: Cesium.Color.BLACK,\n          outlineWidth: 2\n        }\n      })\n    }\n  }\n}, Cesium.ScreenSpaceEventType.LEFT_CLICK)"
+        },
+        {
+          "id": "area-measure",
+          "title": "面积测量",
+          "description": "计算多边形区域的面积",
+          "difficulty": "中级",
+          "tags": ["面积", "测量", "多边形"],
+          "previewImage": "https://picsum.photos/seed/cesium-area/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "function calculatePolygonArea(positions) {\n  const geometry = Cesium.PolygonGeometry.fromPositions({\n    positions: positions,\n    height: 0\n  })\n  \n  const geometryInstance = new Cesium.GeometryInstance({\n    geometry: geometry\n  })\n  \n  const area = Cesium.PolygonGeometry.computeArea(\n    geometryInstance.geometry\n  )\n  \n  return area\n}\n\n// 或手动计算\nfunction calculateAreaSimple(positions) {\n  if (positions.length < 3) return 0\n  \n  const cartographics = positions.map(pos => \n    Cesium.Cartographic.fromCartesian(pos)\n  )\n  \n  let area = 0\n  const n = cartographics.length\n  \n  for (let i = 0; i < n; i++) {\n    const j = (i + 1) % n\n    const p1 = cartographics[i]\n    const p2 = cartographics[j]\n    \n    area += p1.longitude * p2.latitude\n    area -= p2.longitude * p1.latitude\n  }\n  \n  area = Math.abs(area) / 2\n  \n  const avgLatitude = cartographics.reduce((sum, c) => \n    sum + c.latitude, 0) / n\n  \n  const metersPerDegreeLon = 111319 * Math.cos(avgLatitude)\n  const metersPerDegreeLat = 110574\n  \n  return area * metersPerDegreeLon * metersPerDegreeLat\n}"
+        }
+      ]
+    },
+    {
+      "id": "composite-cases",
+      "name": "综合案例",
+      "description": "智慧城市、数字孪生、GIS应用",
+      "icon": "city",
+      "items": [
+        {
+          "id": "smart-city",
+          "title": "智慧城市数字孪生",
+          "description": "完整的智慧城市数字孪生应用案例",
+          "difficulty": "高级",
+          "tags": ["智慧城市", "数字孪生", "综合应用"],
+          "previewImage": "https://picsum.photos/seed/cesium-smartcity/1200/675",
+          "demoUrl": "",
+          "codeSnippet": "// 城市建筑模型\nconst cityTileset = viewer.scene.primitives.add(\n  new Cesium.Cesium3DTileset({\n    url: 'city_tileset.json',\n    maximumScreenSpaceError: 1\n  })\n)\n\n// 地形\nconst terrainProvider = Cesium.createWorldTerrain({\n  requestVertexNormals: true,\n  requestWaterMask: true\n})\nviewer.terrainProvider = terrainProvider\n\n// 交通流\nconst trafficDataSource = new Cesium.CustomDataSource('traffic')\nviewer.dataSources.add(trafficDataSource)\n\n// 实时车辆数据\nfunction updateTraffic() {\n  trafficDataSource.entities.values.forEach(entity => {\n    const position = entity.position.getValue(viewer.clock.currentTime)\n    // 更新位置...\n  })\n}\n\nviewer.scene.preRender.addEventListener(updateTraffic)\n\n// POI图层\nconst poiDataSource = new Cesium.GeoJsonDataSource.load('pois.geojson')\nviewer.dataSources.add(poiDataSource)\n\n// 热力图\nconst heatmap = createHeatmapLayer('heatmap_data.json')\nviewer.imageryLayers.addImageryProvider(heatmap)\n\n// 事件弹窗\nconst handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)\nhandler.setInputAction((movement) => {\n  const pickedFeature = viewer.scene.pick(movement.position)\n  if (Cesium.defined(pickedFeature)) {\n    showInfoWindow(pickedFeature)\n  }\n}, Cesium.ScreenSpaceEventType.LEFT_CLICK)"
+        }
+      ]
+    }
+  ]
+}
